@@ -14,6 +14,5 @@ def callback(content, timestamp_high:int, timestamp_low:int, context):
         return content, False
 
 if __name__ == '__main__':
-    # f = PcapFilter("TongLian_SHFE_Level2_SHFELevel2Origin_20230522.pcapng", "", callback, None)
     f = PcapFilter("tz_222_20240807.pcap", "A50_222_20240807.pcap", callback, None)
     f.begin()
