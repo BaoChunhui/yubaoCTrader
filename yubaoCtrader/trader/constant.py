@@ -35,6 +35,7 @@ class Status(Enum):
     ALLTRADED = "全部成交"
     CANCELLED = "已撤销"
     REJECTED = "拒单"
+    CANCEL = "撤单"
 
 
 class Product(Enum):
