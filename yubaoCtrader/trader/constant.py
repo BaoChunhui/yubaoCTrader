@@ -153,3 +153,12 @@ class Interval(Enum):
     DAILY = "d"
     WEEKLY = "w"
     TICK = "tick"
+
+
+class Return(Enum):
+    """
+    Return of market data.
+    """
+    RISE = "涨"
+    FALL = "跌"
+    FLAT = "平"
