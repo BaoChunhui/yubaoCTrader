@@ -141,7 +141,8 @@ class BacktestingEngine:
 
         if not end:
             end = datetime.now()
-        self.end = end.replace(hour=23, minute=59, second=59)
+        self.end = end
+        # self.end = end.replace(hour=23, minute=59, second=59)
 
         self.mode = mode
         self.risk_free = risk_free
