@@ -201,7 +201,10 @@ class BacktestingEngine:
                 )
 
             self.history_data.extend(data)
-
+            
+            if not total_days:
+                return
+            
             progress += progress_days / total_days
             progress = min(progress, 1)
 
