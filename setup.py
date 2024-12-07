@@ -108,7 +108,8 @@ def get_install_requires():
         "nbformat",
         "tqdm",
         "rqdatac",
-        "wmi"
+        "wmi",
+        "pymysql"
     ]
 
     if sys.version_info.minor < 7:
