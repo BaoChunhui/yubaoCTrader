@@ -107,7 +107,8 @@ def get_install_requires():
         "scikit-learn",
         "nbformat",
         "tqdm",
-        "rqdatac"
+        "rqdatac",
+        "wmi"
     ]
 
     if sys.version_info.minor < 7:
