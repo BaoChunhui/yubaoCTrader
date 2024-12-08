@@ -109,7 +109,8 @@ def get_install_requires():
         "tqdm",
         "rqdatac",
         "wmi",
-        "pymysql"
+        "pymysql",
+        "pyside6"
     ]
 
     if sys.version_info.minor < 7:
