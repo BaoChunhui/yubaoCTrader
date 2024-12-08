@@ -145,7 +145,10 @@ def get_database() -> BaseDatabase:
     database_name: str = SETTINGS["database.name"]
 
     if database_name == 'mysql':
-        from yubaoCtrader.trader.dbconnectors import MysqlDatabase as Database
+        from yubaoCtrader.mysqldb import MysqlDatabase as Database
+    
+    elif database_name == 'dolphindb':
+        from yubaoCtrader.dolphindb import DolphindbDatabase as Database
 
     else:
         raise Exception("database.name in settings should be mysql")
