@@ -61,8 +61,8 @@ def get_hd():
 
 def get_terminal_info():
     """"""
-    iip = ""
-    iport = ""
+    iip = "NA"
+    iport = "NA"
     lip = get_lip()
     mac = get_mac()
     hd = get_hd()
