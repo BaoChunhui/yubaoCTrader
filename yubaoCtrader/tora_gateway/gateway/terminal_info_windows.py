@@ -48,8 +48,8 @@ def get_terminal_info():
     # Initialize COM object in this thread.
     pythoncom.CoInitialize()
 
-    iip = ""
-    iport = ""
+    iip = "NA"
+    iport = "NA"
     lip = get_lip()
     mac = get_mac()
     hd = get_hd()
