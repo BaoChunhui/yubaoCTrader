@@ -502,7 +502,7 @@ class BacktestingEngine:
 
         drawdown_scatter = go.Scatter(
             x=df.index,
-            y=df["drawdown"],
+            y=(df["drawdown"]/df["highlevel"])*100,
             fillcolor="red",
             fill='tozeroy',
             mode="lines",
