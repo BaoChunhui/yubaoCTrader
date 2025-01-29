@@ -344,6 +344,12 @@ class CtaTemplate(ABC):
         if self.trading:
             self.cta_engine.sync_strategy_data(self)
 
+    def log_variables(self) -> None:
+        """打印所有variables中变量的名字和值"""
+        for var_name in self.variables:
+            value = getattr(self, var_name, None)
+            self.write_log(f"{var_name}: {value}")
+
 
 class CtaSignal(ABC):
     """"""
