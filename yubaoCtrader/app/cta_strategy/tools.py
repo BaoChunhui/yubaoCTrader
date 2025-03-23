@@ -94,6 +94,8 @@ class ResultManager:
     def update_trade(self, trade: TradeData) -> None:
         """更新成交"""
         trade_copy = deepcopy(trade)
+        if not trade.volume:
+            return
         closed = self.result.update_trade(trade_copy)
 
         # 如果完成平仓，则创建下一条开平交易
