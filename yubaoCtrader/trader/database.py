@@ -153,8 +153,11 @@ def get_database() -> BaseDatabase:
     elif database_name == 'sqlite':
         from yubaoCtrader.sqlitedb import SqliteDatabase as Database
 
+    elif database_name == 'tdengine':
+        from yubaoCtrader.tdengine import TaosDatabase as Database
+
     else:
-        raise Exception("database.name in settings should be mysql")
+        raise Exception("database.name in settings should be on of [mysql, dolphindb, sqlite, tdengine]")
 
     database = Database()
     return database
