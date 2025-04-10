@@ -1,1 +1,1 @@
-from .taos_database import TaosDatabase as Database
+from .taos_database import TaosDatabase
