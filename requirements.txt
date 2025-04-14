@@ -18,3 +18,4 @@ nbformat==5.9.2
 tqdm==4.66.2
 taospy==2.8.0
 taos-ws-py==0.4.0
+dolphindb==3.0.2.4
