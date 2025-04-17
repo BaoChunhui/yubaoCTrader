@@ -359,6 +359,9 @@ class TaosDatabase(BaseDatabase):
                 data: list[str] = [f"insert into {table_name} values"]
                 count = 0
 
+                data.append(generate(d))
+                count += 1
+
         if count != 0:
             self.cursor.execute(" ".join(data))
 
