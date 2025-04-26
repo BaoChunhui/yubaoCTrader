@@ -1505,3 +1505,90 @@ class DailyBarGenerator:
 
             # 清空缓存
             self.daily_bar = None
+
+
+class MinuteBarsGenerator:
+    """分钟K线截面生成器"""
+
+    def __init__(self, on_bars: Callable) -> None:
+        """构造函数"""
+        # K线截面回调函数
+        self.on_bars: Callable = on_bars
+
+        # 合成中的分钟K线缓存
+        self.bars: Dict[str, BarData] = {}
+
+        # 最新的Tick缓存
+        self.ticks: Dict[str, TickData] = {}
+
+        # 跟踪时间所用的合约代码
+        self.dt_symbol: str = None
+
+        # 最近更新的Tick时间戳
+        self.last_dt: datetime = None
+
+    def check_finished(self, tick: TickData) -> bool:
+        """检查当前分钟走完"""
+        # 时间戳的分钟部分，发生变化
+        if self.last_dt and self.last_dt.minute != tick.datetime.minute:
+            return True
+
+        return False
+
+    def update_tick(self, tick: TickData) -> None:
+        """更新Tick数据"""
+        # 绑定第一个合约来判断时间
+        if not self.dt_symbol:
+            self.dt_symbol = tick.vt_symbol
+
+        # 检查分钟是否合成结束
+        if tick.vt_symbol == self.dt_symbol and self.check_finished(tick):
+            # 调整所有缓存K线时间戳
+            for bar in self.bars.values():
+                # 分钟K线使用分钟开始时间戳
+                bar.datetime = self.last_dt.replace(second=0, microsecond=0)
+
+            # 推送K线截面数据
+            self.on_bars(self.bars)
+
+            # 创建新一分钟的缓存字典
+            self.bars = {}
+
+        # 查询缓存中的K线
+        bar = self.bars.get(tick.vt_symbol, None)
+
+        # 如果没有则创建
+        if not bar:
+            bar = BarData(
+                symbol=tick.symbol,
+                exchange=tick.exchange,
+                interval=Interval.MINUTE,
+                datetime=tick.datetime,
+                gateway_name=tick.gateway_name,
+                open_price=tick.last_price,
+                high_price=tick.last_price,
+                low_price=tick.last_price,
+                close_price=tick.last_price,
+                open_interest=tick.open_interest
+            )
+            self.bars[bar.vt_symbol] = bar
+        # 如果已有则更新
+        else:
+            bar.high_price = max(bar.high_price, tick.last_price)
+            bar.low_price = min(bar.low_price, tick.last_price)
+            bar.close_price = tick.last_price
+            bar.open_interest = tick.open_interest
+            bar.datetime = tick.datetime
+
+        # 对于成交量和成交额，要和上一个Tick比较后计算
+        last_tick = self.ticks.get(tick.vt_symbol, None)
+        if last_tick:
+            bar.volume += max(tick.volume - last_tick.volume, 0)
+            bar.turnover += max(tick.turnover - last_tick.turnover, 0)
+
+        # 缓存最新Tick数据
+        self.ticks[tick.vt_symbol] = tick
+
+        # 如果是跟踪时间的合约，则更新时间
+        if tick.vt_symbol == self.dt_symbol:
+            self.last_dt = tick.datetime
