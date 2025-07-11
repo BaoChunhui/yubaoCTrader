@@ -18,7 +18,7 @@ class BaseDatafeed(ABC):
         """
         pass
 
-    def query_bar_history(self, req: HistoryRequest, output: Callable = print) -> Optional[List[BarData]]:
+    def query_bar_history(self, req: HistoryRequest, output: Callable = print, adjust_type: str = "none") -> Optional[List[BarData]]:
         """
         Query history bar data.
         """

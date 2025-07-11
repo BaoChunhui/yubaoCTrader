@@ -173,15 +173,15 @@ class RqdataDatafeed(BaseDatafeed):
         self.inited = True
         return True
 
-    def query_bar_history(self, req: HistoryRequest, output: Callable = print) -> Optional[list[BarData]]:
+    def query_bar_history(self, req: HistoryRequest, output: Callable = print, adjust_type: str = "none") -> Optional[list[BarData]]:
         """查询K线数据"""
         # 期货品种且代码中没有数字（非具体合约），则查询主力连续
         if req.exchange in FUTURES_EXCHANGES and req.symbol.isalpha():
             return self._query_dominant_history(req, output)
         else:
-            return self._query_bar_history(req, output)
+            return self._query_bar_history(req, output, adjust_type)
 
-    def _query_bar_history(self, req: HistoryRequest, output: Callable = print) -> Optional[list[BarData]]:
+    def _query_bar_history(self, req: HistoryRequest, output: Callable = print, adjust_type: str = "none") -> Optional[list[BarData]]:
         """查询K线数据"""
         if not self.inited:
             n: bool = self.init(output)
@@ -224,7 +224,7 @@ class RqdataDatafeed(BaseDatafeed):
             fields=fields,
             start_date=start,
             end_date=get_next_trading_date(end),        # 为了查询夜盘数据
-            adjust_type="none"
+            adjust_type=adjust_type
         )
 
         data: list[BarData] = []

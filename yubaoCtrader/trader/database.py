@@ -146,9 +146,6 @@ def get_database() -> BaseDatabase:
 
     if database_name == 'mysql':
         from yubaoCtrader.mysqldb import MysqlDatabase as Database
-    
-    elif database_name == 'dolphindb':
-        from yubaoCtrader.dolphindb import DolphindbDatabase as Database
 
     elif database_name == 'sqlite':
         from yubaoCtrader.sqlitedb import SqliteDatabase as Database
