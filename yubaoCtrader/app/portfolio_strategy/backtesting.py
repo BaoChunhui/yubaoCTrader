@@ -399,13 +399,16 @@ class BacktestingEngine:
             daily_trade_count: int = total_trade_count / total_days
 
             total_return: float = (end_balance / self.capital - 1) * 100
-            annual_return: float = total_return / total_days * self.annual_days
+            # annual_return: float = total_return / total_days * self.annual_days
+            annual_return = (np.exp(self.annual_days / total_days * np.log(end_balance / self.capital)) - 1) * 100  # 年化收益率
             daily_return: float = df["return"].mean() * 100
             return_std: float = df["return"].std() * 100
 
             if return_std:
-                daily_risk_free: float = self.risk_free / np.sqrt(self.annual_days)
-                sharpe_ratio: float = (daily_return - daily_risk_free) / return_std * np.sqrt(self.annual_days)
+                # daily_risk_free: float = self.risk_free / np.sqrt(self.annual_days)
+                # sharpe_ratio: float = (daily_return - daily_risk_free) / return_std * np.sqrt(self.annual_days)
+                daily_risk_free: float = (np.exp(np.log(1+self.risk_free) / self.annual_days) - 1) * 100  # 由年化百分比收益率计算日均对数收益率，再乘100
+                sharpe_ratio: float = (daily_return - daily_risk_free) / return_std * np.sqrt(self.annual_days) # 计算夏普比率
             else:
                 sharpe_ratio: float = 0
             
