@@ -308,3 +308,15 @@ class StrategyTemplate(ABC):
         """同步策略状态数据到文件"""
         if self.trading:
             self.strategy_engine.sync_strategy_data(self)
+
+    def get_pos(self):
+        """获得当前持仓情况"""
+        pos_data = {}
+        if not self.strategy_engine.vt_symbols:
+            return pos_data
+
+        for vt_symbol in self.strategy_engine.vt_symbols:
+            pos_data[vt_symbol] = self.pos_data[vt_symbol]
+
+        return pos_data
+
