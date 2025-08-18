@@ -309,7 +309,7 @@ class StrategyTemplate(ABC):
         if self.trading:
             self.strategy_engine.sync_strategy_data(self)
 
-    def get_pos(self):
+    def get_poses(self):
         """获得当前持仓情况"""
         pos_data = {}
         if not self.strategy_engine.vt_symbols:
@@ -319,4 +319,5 @@ class StrategyTemplate(ABC):
             pos_data[vt_symbol] = self.pos_data[vt_symbol]
 
         return pos_data
+
 
