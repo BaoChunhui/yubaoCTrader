@@ -648,6 +648,7 @@ class BacktestingEngine:
             # 推送委托未成交状态更新
             if order.status == Status.SUBMITTING:
                 order.status = Status.NOTTRADED
+                self.strategy.on_order(order)
                 self.strategy.update_order(order)
 
             # 检查可以被撮合的限价委托
@@ -669,6 +670,7 @@ class BacktestingEngine:
             # 推送委托成交状态更新
             order.traded = order.volume
             order.status = Status.ALLTRADED
+            self.strategy.on_order(order)
             self.strategy.update_order(order)
 
             if order.vt_orderid in self.active_limit_orders:
@@ -695,6 +697,7 @@ class BacktestingEngine:
                 gateway_name=self.gateway_name,
             )
 
+            self.strategy.on_trade(trade)
             self.strategy.update_trade(trade)
             self.trades[trade.vt_tradeid] = trade
 
@@ -749,6 +752,7 @@ class BacktestingEngine:
         order: OrderData = self.active_limit_orders.pop(vt_orderid)
 
         order.status = Status.CANCELLED
+        self.strategy.on_order(order)
         self.strategy.update_order(order)
 
     def write_log(self, msg: str, strategy: StrategyTemplate = None) -> None:

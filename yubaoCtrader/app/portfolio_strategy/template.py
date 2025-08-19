@@ -118,6 +118,20 @@ class StrategyTemplate(ABC):
     def on_bars(self, bars: dict[str, BarData]) -> None:
         """K线切片回调"""
         pass
+    
+    @virtual
+    def on_trade(self, trade: TradeData) -> None:
+        """
+        Callback of new trade data update.
+        """
+        pass
+
+    @virtual
+    def on_order(self, order: OrderData) -> None:
+        """
+        Callback of new order data update.
+        """
+        pass
 
     def update_trade(self, trade: TradeData) -> None:
         """成交数据更新"""
