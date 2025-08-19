@@ -697,8 +697,8 @@ class BacktestingEngine:
                 gateway_name=self.gateway_name,
             )
 
-            self.strategy.on_trade(trade)
             self.strategy.update_trade(trade)
+            self.strategy.on_trade(trade)
             self.trades[trade.vt_tradeid] = trade
 
     def load_bars(
@@ -1066,3 +1066,4 @@ def save_cache(
     print("保存数据", vt_symbol)
     with open(str(path), "wb") as f:
         pickle.dump(data, f)
+
