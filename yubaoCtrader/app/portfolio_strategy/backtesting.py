@@ -353,6 +353,7 @@ class BacktestingEngine:
         # 计算资金相关指标
         if df is not None:
             df["balance"] = df["net_pnl"].cumsum() + self.capital
+            df["log_balance"] = np.log(df["balance"])  # 对数坐标下策略每天的净值
             df["return"] = np.log(df["balance"] / df["balance"].shift(1)).fillna(0)
             df["highlevel"] = df["balance"].rolling(min_periods=1, window=len(df), center=False).max()
             df["drawdown"] = df["balance"] - df["highlevel"]
@@ -497,9 +498,9 @@ class BacktestingEngine:
             return
 
         fig = make_subplots(
-            rows=4,
+            rows=5,
             cols=1,
-            subplot_titles=["Balance", "Drawdown", "Daily Pnl", "Pnl Distribution"],
+            subplot_titles=["Balance", "Log_Balance", "Drawdown", "Daily Pnl", "Pnl Distribution"],
             vertical_spacing=0.06
         )
 
@@ -508,6 +509,12 @@ class BacktestingEngine:
             y=df["balance"],
             mode="lines",
             name="Balance"
+        )
+        log_balance_line = go.Scatter(
+            x=df.index,
+            y=df["log_balance"],
+            mode="lines",
+            name="Log Balance"
         )
         drawdown_scatter = go.Scatter(
             x=df.index,
@@ -521,9 +528,10 @@ class BacktestingEngine:
         pnl_histogram = go.Histogram(x=df["net_pnl"], nbinsx=100, name="Days")
 
         fig.add_trace(balance_line, row=1, col=1)
-        fig.add_trace(drawdown_scatter, row=2, col=1)
-        fig.add_trace(pnl_bar, row=3, col=1)
-        fig.add_trace(pnl_histogram, row=4, col=1)
+        fig.add_trace(log_balance_line, row=2, col=1)
+        fig.add_trace(drawdown_scatter, row=3, col=1)
+        fig.add_trace(pnl_bar, row=4, col=1)
+        fig.add_trace(pnl_histogram, row=5, col=1)
 
         fig.update_layout(height=1000, width=1000)
         fig.show()
@@ -1066,4 +1074,3 @@ def save_cache(
     print("保存数据", vt_symbol)
     with open(str(path), "wb") as f:
         pickle.dump(data, f)
-
