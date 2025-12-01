@@ -330,7 +330,7 @@ class BacktestingEngine:
         if df is not None:
             # Calculate balance related time series data
             df["balance"] = df["net_pnl"].cumsum() + self.capital
-
+            df["log_balance"] = np.log(df["balance"])
             # When balance falls below 0, set daily return to 0
             pre_balance: Series = df["balance"].shift(1)
             pre_balance.iloc[0] = self.capital
@@ -490,9 +490,9 @@ class BacktestingEngine:
             return
 
         fig = make_subplots(
-            rows=4,
+            rows=5,
             cols=1,
-            subplot_titles=["Balance", "Drawdown", "Daily Pnl", "Pnl Distribution"],
+            subplot_titles=["Balance", "Log_Balance", "Drawdown", "Daily Pnl", "Pnl Distribution"],
             vertical_spacing=0.06
         )
 
@@ -502,7 +502,12 @@ class BacktestingEngine:
             mode="lines",
             name="Balance"
         )
-
+        log_balance_line = go.Scatter(
+            x=df.index,
+            y=df["log_balance"],
+            mode="lines",
+            name="Log Balance"
+        )
         drawdown_scatter = go.Scatter(
             x=df.index,
             y=(df["drawdown"]/df["highlevel"])*100,
@@ -515,9 +520,10 @@ class BacktestingEngine:
         pnl_histogram = go.Histogram(x=df["net_pnl"], nbinsx=100, name="Days")
 
         fig.add_trace(balance_line, row=1, col=1)
-        fig.add_trace(drawdown_scatter, row=2, col=1)
-        fig.add_trace(pnl_bar, row=3, col=1)
-        fig.add_trace(pnl_histogram, row=4, col=1)
+        fig.add_trace(log_balance_line, row=2, col=1)
+        fig.add_trace(drawdown_scatter, row=3, col=1)
+        fig.add_trace(pnl_bar, row=4, col=1)
+        fig.add_trace(pnl_histogram, row=5, col=1)
 
         fig.update_layout(height=1000, width=1000)
         fig.show()
